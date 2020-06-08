@@ -1,0 +1,37 @@
+Source: win32-loader
+XSBC-Original-Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
+Maintainer: Kevin Chevreuil - Kaisen <kaisen@kaisen-linux.org>
+Uploaders: Kevin Chevreuil - Kaisen <kaisen@kaisen-linux.org>
+Section: utils
+Priority: optional
+Build-Depends: nsis (>= 3),
+               mingw-w64,
+               librsvg2-bin,
+               icoutils,
+               gawk,
+               gettext,
+               grub-pc-bin,
+               imagemagick,
+               ipxe,
+               loadlin,
+               locales-all,
+               gpgv-win32,
+               debian-archive-keyring,
+	       kaisen-archive-keyring,
+               gzip-win32,
+               wine [i386],
+               debhelper-compat (= 12)
+Standards-Version: 4.4.0
+
+Package: win32-loader
+Architecture: all
+Depends: ${misc:Depends}
+Suggests: wine
+Built-Using: ${w32-loader:built-using}
+Description: Debian-Installer loader for win32
+ This package provides a win32 program that can be used as a loader for
+ Debian Installer, acting as a more user-friendly boot mechanism than
+ traditional BIOS-based boot.
+ .
+ This package contains the cdrom/usb-disk add-on that starts a media-based
+ install.
