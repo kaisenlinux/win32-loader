@@ -39,7 +39,14 @@ NSIS_CC		:= i686-w64-mingw32-gcc -Os -Xlinker --no-insert-timestamp
 NSIS_STRIP	:= i686-w64-mingw32-strip
 NSIS_CFLAGS	:= -Wl,--file-alignment,512 -Werror -D_WIN32_WINNT=0x0500
 
-ICONSIZES       := 16 24 32 48 256
+ICONSIZES       := 16,24,32,48,256
+# Density calculation:
+# The default resolution of 72 dots per inch is used to get the
+# equivalent of one point per pixel.
+# 108 is the width and height of the SVG.
+# 256 is the width and height of the largest icon.
+# So density will be (256 * 72) / 108 = 170
+DENSITY         := 170
 
 # Standard makensis call
 MAKENSIS	:= makensis -V3
@@ -152,14 +159,9 @@ endif
 templates/gtk.bmp: templates/gtk_orig.png
 	convert $^ -resize 107x80 BMP3:$@
 
-# Build icons out of the SVG source, force them being square
-$(BUILD_DIR)/icon/swirl-%.png: icon/swirl.svg
-	$(MKDIR_P) $(BUILD_DIR)/icon
-	rsvg-convert -f png -h $* -w $* $^ > $@
-
-# Build the icon out of the PNG icons
-$(BUILD_DIR)/win32-loader.ico: $(ICONSIZES:%=$(BUILD_DIR)/icon/swirl-%.png)
-	icotool -c -o $@ $^
+# Build the icon out of the SVG source
+$(BUILD_DIR)/win32-loader.ico: icon/swirl.svg
+	convert -background none -density $(DENSITY) $^ -depth 8 -colors 256 -dither FloydSteinberg -define png:compression-filter=1 -define png:compression-level=9 -define png:compression-strategy=1 -define icon:auto-resize=$(ICONSIZES) $@
 
 $(OUTFILE_NAME): main.nsi maps.ini \
 		templates/gtk.bmp templates/text.bmp \
@@ -167,7 +169,7 @@ $(OUTFILE_NAME): main.nsi maps.ini \
 		$(BUILD_DIR)/loadlin.pif $(BUILD_DIR)/loadlin.exe \
 		$(BUILD_DIR)/g2ldr $(BUILD_DIR)/g2ldr.mbr \
 		| $(HELPERS:=_helper)
-	find $^ -newermt "@$(SOURCE_DATE_EPOCH)" -print0 | xargs -0r touch --date="@$(SOURCE_DATE_EPOCH)"
+	find $(BUILD_DIR) -type f -exec touch --date="@$(SOURCE_DATE_EPOCH)" '{}' ';'
 	$(MKDIR_P) $(BUILD_DIR)/l10n
 	$(MAKE) -C $(BUILD_DIR)/l10n -f $(CURDIR)/l10n/Makefile VPATH=$(CURDIR)/l10n
 	$(MAKENSIS) main.nsi

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: win32-loader\n"
 "Report-Msgid-Bugs-To: win32-loader@packages.debian.org\n"
 "POT-Creation-Date: 2019-09-01 11:42+0200\n"
-"PO-Revision-Date: 2011-10-09 18:52+0200\n"
+"PO-Revision-Date: 2020-03-21 20:24+0100\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "Language: cs\n"
@@ -273,7 +273,7 @@ msgstr "Připojování ..."
 #. " (zbývá %d %s%s)"
 #: win32-loader.c:133
 msgid "$1 left - $2 of $4$0$(^Byte) ($3$0$(^Byte)/s)"
-msgstr ""
+msgstr "Zbývá $1 - $2 z $4$0$(^Byte) ($3$0$(^Byte)/s)"
 
 #: win32-loader.c:134
 msgid "Select which version of Debian-Installer to use:"

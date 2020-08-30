@@ -2,6 +2,7 @@
 # This file is distributed under the same license as the win32-loader package.
 # Copyright (C) Jan Keller <bananenscheibe@gmx.de>, 2007.
 # Copyright (C) Holger Wansing <linux@wansing-online.de>, 2010, 2011.
+# Holger Wansing <hwansing@mailbox.org>, 2020.
 #
 #
 msgid ""
@@ -9,13 +10,15 @@ msgstr ""
 "Project-Id-Version: win32-loader 0.6.90\n"
 "Report-Msgid-Bugs-To: win32-loader@packages.debian.org\n"
 "POT-Creation-Date: 2019-09-01 11:42+0200\n"
-"PO-Revision-Date: 2011-03-07 20:49+0100\n"
-"Last-Translator: Holger Wansing <linux@wansing-online.de>\n"
-"Language-Team: Debian German <debian-l10n-german@lists.debian.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2020-03-25 11:03+0100\n"
+"Last-Translator: Holger Wansing <hwansing@mailbox.org>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
 
 #. translate:
 #. This must be a valid string recognised by Nsis.  If your
@@ -283,7 +286,7 @@ msgstr "Verbindungsaufbau ..."
 #. " (%d %s%s verbleibend)"
 #: win32-loader.c:133
 msgid "$1 left - $2 of $4$0$(^Byte) ($3$0$(^Byte)/s)"
-msgstr ""
+msgstr "$1 verbleibend - $2 von $4$0$(^Byte) ($3$0$(^Byte)/s)"
 
 #: win32-loader.c:134
 msgid "Select which version of Debian-Installer to use:"

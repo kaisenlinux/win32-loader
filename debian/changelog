@@ -1,3 +1,30 @@
+win32-loader (0.10.1+kaisen1) kaisen-packages; urgency=medium
+
+  * Import new upstream release
+
+ -- Kevin Chevreuil - Kaisen <kaisen@kaisen-linux.org>  Sun, 30 Aug 2020 04:39:41 +0200
+
+win32-loader (0.10.1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Thomas Gaugler ]
+  * Skip blhc job in Salsa CI pipeline
+  * Generate the installer icon from the SVG source in one go, so drop
+    icoutis B-D
+  * d/control: Set Rules-Requires-Root to no
+  * d/control: Update to Standards-Version 4.5.0
+  * Test win32-loader in its installed state
+  * Limit updating of timestamps to build directory
+
+  [ Updated translations ]
+  * Czech (cs.po) by Miroslav Kure
+  * German (de.po) by Holger Wansing
+  * Korean (ko.po) by Changwoo Ryu
+  * Portuguese (Brazil) (pt_BR.po) by Adriano Rafael Gomes
+
+ -- Didier Raboud <odyx@debian.org>  Thu, 16 Jul 2020 18:18:40 +0200
+
 win32-loader (0.10.0+kaisen2) kaisen-devel; urgency=medium
 
   * Import new logo created by Tobas

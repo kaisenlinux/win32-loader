@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: win32-loader_l10n_po\n"
 "Report-Msgid-Bugs-To: win32-loader@packages.debian.org\n"
-"POT-Creation-Date: 2019-05-22 22:56+0200\n"
+"POT-Creation-Date: 2019-09-01 11:42+0200\n"
 "PO-Revision-Date: 2012-04-02 18:36+0100\n"
 "Last-Translator: ivarela <ivarela@ubuntu.com>\n"
 "Language-Team: Asturian <softast-xeneral@lists.sourceforge.net>\n"
@@ -259,58 +259,33 @@ msgid "Text install"
 msgstr "Instalador de testu"
 
 #: win32-loader.c:120
-#, c-format
-msgid "Downloading %s"
-msgstr "Baxando %s"
-
-#: win32-loader.c:121
 msgid "Connecting ..."
 msgstr "Coneutando..."
 
-#: win32-loader.c:122
-msgid "second"
-msgstr "segundu"
-
-#: win32-loader.c:123
-msgid "minute"
-msgstr "minutu"
-
-#: win32-loader.c:124
-msgid "hour"
-msgstr "hora"
-
 #. translate:
-#. This string is appended to "second", "minute" or "hour" to make plurals.
-#. I know it's quite unfortunate.  An alternate method for translating NSISdl
-#. has been proposed [1] but in the meantime we'll have to cope with this.
-#. [1] http://sourceforge.net/tracker/index.php?func=detail&aid=1656076&group_id=22049&atid=373087
+#. $(^Byte), $0, $1, $4 must not be translated.
+#. These are substitutes as the following:
+#. $(^Byte) -> B
+#. $0 -> unit prefix such as G (giga), M (mega), K (kilo) or empty
+#. $1 -> estimated time remaining for the download
+#. It includes the unit. Examples are 1h, 5m, 3s
+#. $2 -> current size of downloaded content
+#. $4 -> total size of file
+#. Example: 3s left - 49.2 of 55.0 MB (2.2 MB/s)
 #.
-#: win32-loader.c:132
-msgid "s"
-msgstr "s"
-
-#. Former values:
-#. "%dkB (%d%%) de %dkB a %d.%01dkB/s"
-#. " (falten %d %s%s)"
 #: win32-loader.c:133
-#, c-format
-msgid "%dkB (%d%%) of %dkB at %d.%01dkB/s"
-msgstr "%dkB (%d%%) de %dkB a %d.%01dkB/s"
+msgid "$1 left - $2 of $4$0$(^Byte) ($3$0$(^Byte)/s)"
+msgstr ""
 
 #: win32-loader.c:134
-#, c-format
-msgid " (%d %s%s remaining)"
-msgstr " (falten %d %s%s)"
-
-#: win32-loader.c:135
 msgid "Select which version of Debian-Installer to use:"
 msgstr "Seleiciona la versión del instalador de Debian a usar:"
 
-#: win32-loader.c:136
+#: win32-loader.c:135
 msgid "Stable release.  This will install Debian \"stable\"."
 msgstr "Espublización estable. Esta opción instalará Debian \"estable\"."
 
-#: win32-loader.c:137
+#: win32-loader.c:136
 msgid ""
 "Daily build.  This is the development version of Debian-Installer.  It will "
 "install Debian \"testing\" by default, and may be capable of installing "
@@ -323,7 +298,7 @@ msgstr ""
 #. translate:
 #. You might want to mention that so-called "known issues" page is only available in English.
 #.
-#: win32-loader.c:142
+#: win32-loader.c:141
 msgid ""
 "It is recommended that you check for known issues before using a daily "
 "build.  Would you like to do that now?"
@@ -331,7 +306,7 @@ msgstr ""
 "Recomiéndase que consultes los problemes conocíos enantes d'usar la "
 "compilación diaria. ¿Quies facelo agora?"
 
-#: win32-loader.c:143
+#: win32-loader.c:142
 msgid ""
 "The following parameters will be used.  Do NOT change any of these unless "
 "you know what you're doing."
@@ -339,37 +314,37 @@ msgstr ""
 "Los siguientes parámetros serán usaos. Nun camudes nengún a menos que sepas "
 "lo que tas faciendo."
 
-#: win32-loader.c:144
+#: win32-loader.c:143
 msgid "Proxy settings (host:port):"
 msgstr "Configuración de proxy (sistema:puertu):"
 
-#: win32-loader.c:145
+#: win32-loader.c:144
 msgid "Location of boot.ini:"
 msgstr "Allugamientu de boot.ini:"
 
-#: win32-loader.c:146
+#: win32-loader.c:145
 msgid "Base URL for netboot images (linux and initrd.gz):"
 msgstr "URL base pa les imáxenes d'arranque por rede (linux ya initrd.gz):"
 
-#: win32-loader.c:147
+#: win32-loader.c:146
 msgid "Error"
 msgstr "Fallu"
 
-#: win32-loader.c:148
+#: win32-loader.c:147
 msgid "Error: failed to copy $0 to $1."
 msgstr "Fallu: Nun pudo copiase $0 a $1."
 
 #. translate:
 #. $0 will be "Release" (it is a filename).
 #.
-#: win32-loader.c:153
+#: win32-loader.c:152
 msgid "Checking GPG signature on $0."
 msgstr "Comprobando la robla GPG de $0."
 
 #. translate:
 #. $0 will be "Release" (it is a filename).
 #.
-#: win32-loader.c:158
+#: win32-loader.c:157
 msgid "The downloaded $0 file cannot be trusted! Aborting."
 msgstr "¡Nun pue confiase nel ficheru descargáu $0! Interrumpiendo."
 
@@ -377,50 +352,50 @@ msgstr "¡Nun pue confiase nel ficheru descargáu $0! Interrumpiendo."
 #. This appears in a MessageBox when the md5 checksum verification failed. $0 is a url; $2 is the filename $1 is the
 #. computed checksum and $4 is the expected one.
 #.
-#: win32-loader.c:164
+#: win32-loader.c:163
 msgid "Checksum mismatch for $0/$2. Got $1 when expecting $4. Aborting."
 msgstr "Fallu na suma de control de $0/$2. Obtúvose $1 cuando s'esperaba $4."
 
 #. translate:
 #. $2 is a filename
 #.
-#: win32-loader.c:169
+#: win32-loader.c:168
 msgid "Computing checksum for $2"
 msgstr "Calculando la suma de control pa $2"
 
-#: win32-loader.c:170
+#: win32-loader.c:169
 msgid "Generating $0"
 msgstr "Xenerando $0"
 
-#: win32-loader.c:171
+#: win32-loader.c:170
 msgid "Appending preseeding information to $0"
 msgstr "Amestando información de preconfiguración a $0"
 
-#: win32-loader.c:172
+#: win32-loader.c:171
 msgid "Error: unable to run $0."
 msgstr "Fallu: Nun pudo executase $0."
 
-#: win32-loader.c:173
+#: win32-loader.c:172
 msgid "Disabling NTFS compression in bootstrap files"
 msgstr "Deshabilitando la compresión NTFS nos ficheros d'arranque"
 
-#: win32-loader.c:174
+#: win32-loader.c:173
 msgid "Registering in NTLDR"
 msgstr "Rexistrando en NTLDR"
 
-#: win32-loader.c:175
+#: win32-loader.c:174
 msgid "Registering in BootMgr"
 msgstr "Rexistrando en BootMgr"
 
-#: win32-loader.c:176
+#: win32-loader.c:175
 msgid "Error: failed to parse bcdedit.exe output."
 msgstr "Fallu: Nun pudo tratase la salida de bcdedit.exe."
 
-#: win32-loader.c:177
+#: win32-loader.c:176
 msgid "Error: $0 not found.  Is this really Windows $windows_version?"
 msgstr "Fallu: Nun s'alcontró $0 .  ¿Daveres esto ye Windows $windows_version?"
 
-#: win32-loader.c:178
+#: win32-loader.c:177
 msgid "VERY IMPORTANT NOTICE:\\n\\n"
 msgstr "AVISU ENFORMA IMPORTANTE\\n\\n"
 
@@ -430,7 +405,7 @@ msgstr "AVISU ENFORMA IMPORTANTE\\n\\n"
 #. Take into account that either option has to make sense in our
 #. current context (i.e. be careful when using pronouns, etc).
 #.
-#: win32-loader.c:186
+#: win32-loader.c:185
 msgid ""
 "The second stage of this install process will now be started.  After your "
 "confirmation, this program will restart Windows in DOS mode, and "
@@ -440,7 +415,7 @@ msgstr ""
 "to confirmación, esti programa reaniciará en mou DOS de Windows y cargará "
 "automáticamente la siguiente parte del procesu d'instalación.\\n\\n"
 
-#: win32-loader.c:187
+#: win32-loader.c:186
 msgid ""
 "You need to reboot in order to proceed with the install process.  During "
 "your next boot, you will be asked whether you want to start Windows or "
@@ -450,7 +425,7 @@ msgstr ""
 "arranque entrugaráte si quies arrancar Windows o siguir col procesu "
 "d'instalación.\\n\\n"
 
-#: win32-loader.c:188
+#: win32-loader.c:187
 msgid ""
 "During the install process, you will be offered the possibility of either "
 "reducing your Windows partition or completely replacing it.  In both cases, "
@@ -468,6 +443,27 @@ msgstr ""
 "caltener Windows nel to discu), podrás desinstalar el cargador a traviés de "
 "la opción de Windows Amestar/Desaniciar programes nel Panel de Control."
 
-#: win32-loader.c:189
+#: win32-loader.c:188
 msgid "Do you want to reboot now?"
 msgstr "¿Quier reaniciar agora?"
+
+#~ msgid "Downloading %s"
+#~ msgstr "Baxando %s"
+
+#~ msgid "second"
+#~ msgstr "segundu"
+
+#~ msgid "minute"
+#~ msgstr "minutu"
+
+#~ msgid "hour"
+#~ msgstr "hora"
+
+#~ msgid "s"
+#~ msgstr "s"
+
+#~ msgid "%dkB (%d%%) of %dkB at %d.%01dkB/s"
+#~ msgstr "%dkB (%d%%) de %dkB a %d.%01dkB/s"
+
+#~ msgid " (%d %s%s remaining)"
+#~ msgstr " (falten %d %s%s)"

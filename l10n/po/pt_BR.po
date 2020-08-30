@@ -1,16 +1,19 @@
 # Brazilian Portuguese translation for win32-loader
-# Copyright © 2008-20120 Felipe Augusto van de Wiel (faw) <faw@debian.org>
+# Copyright © 2008-2012 Felipe Augusto van de Wiel (faw) <faw@debian.org>
 # This file is distributed under the same license as the win32-loader package.
+# Felipe Augusto van de Wiel (faw) <faw@debian.org>, 2008-2012.
+# Adriano Rafael Gomes <adrianorg@debian.org>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: win32-loader (20080210)\n"
 "Report-Msgid-Bugs-To: win32-loader@packages.debian.org\n"
 "POT-Creation-Date: 2019-09-01 11:42+0200\n"
-"PO-Revision-Date: 2012-06-23 22:56-0300\n"
-"Last-Translator: Felipe Augusto van de Wiel (faw) <faw@debian.org>\n"
-"Language-Team: l10n portuguese <debian-l10n-portuguese@lists.debian.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2020-04-12 19:25-0300\n"
+"Last-Translator: Adriano Rafael Gomes <adrianorg@debian.org>\n"
+"Language-Team: Brazilian Portuguese <debian-l10n-portuguese@lists.debian."
+"org>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -275,7 +278,7 @@ msgstr "Conectando ..."
 #. " (%d %s%s faltando)"
 #: win32-loader.c:133
 msgid "$1 left - $2 of $4$0$(^Byte) ($3$0$(^Byte)/s)"
-msgstr ""
+msgstr "$1 faltando - $2 de $4$0$(^Byte) ($3$0$(^Byte)/s)"
 
 #: win32-loader.c:134
 msgid "Select which version of Debian-Installer to use:"
@@ -400,7 +403,7 @@ msgstr "Erro: $0 não encontrado. Este é realmente o Windows $windows_version?"
 
 #: win32-loader.c:177
 msgid "VERY IMPORTANT NOTICE:\\n\\n"
-msgstr "NOTÍCIA MUITA IMPORTANTE:\\n\\n"
+msgstr "NOTÍCIA MUITO IMPORTANTE:\\n\\n"
 
 #. translate:
 #. The following two strings are mutualy exclusive.  win32-loader

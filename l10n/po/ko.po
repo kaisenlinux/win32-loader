@@ -3,14 +3,14 @@
 # Copyright (C) 2007 THE win32-loader'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the win32-loader package.
 # Sunjae Park <darehanl@gmail.com>, 2007 - 2008
-# Changwoo Ryu <cwryu@debian.org>, 2007, 2014.
+# Changwoo Ryu <cwryu@debian.org>, 2007, 2014, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: win32-loader\n"
 "Report-Msgid-Bugs-To: win32-loader@packages.debian.org\n"
 "POT-Creation-Date: 2019-09-01 11:42+0200\n"
-"PO-Revision-Date: 2014-04-23 05:47+0900\n"
+"PO-Revision-Date: 2020-05-20 10:15+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <debian-l10n-korean@lists.debian.org>\n"
 "Language: ko\n"
@@ -271,7 +271,7 @@ msgstr "연결하는 중..."
 #. " (%d %s%s 남았음)"
 #: win32-loader.c:133
 msgid "$1 left - $2 of $4$0$(^Byte) ($3$0$(^Byte)/s)"
-msgstr ""
+msgstr "$1 남음 - 현재 $2, 전체 $4$0$(^Byte) ($3$0$(^Byte)/초)"
 
 #: win32-loader.c:134
 msgid "Select which version of Debian-Installer to use:"
