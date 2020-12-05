@@ -3,10 +3,14 @@
 ; cpio test runner
 ; Run installer with the following arguments
 ;  /IN=<file> /OUT=<cpio archive> /RESULT=<result file>
+; and for the uninstaller append the argument below:
+; _?=<directory containing uninstaller>
 
 Unicode True
 Name cpio
 RequestExecutionLevel user
+
+!define UNFUNC "un."
 
 !include FileFunc.nsh
 
@@ -17,10 +21,22 @@ RequestExecutionLevel user
 ${CPIO_Write}
 
 Page InstFiles
+UninstPage InstFiles
 
 Var Arguments
 
-Section GenerateCPIO
+!macro Run UN
+!searchreplace INIT_FUNC "${UN}.onInit" ".." "."
+Function ${INIT_FUNC}
+  InitPluginsDir
+  ${GetParameters} $Arguments
+  ClearErrors
+  SetOutPath "$EXEDIR"
+FunctionEnd
+
+${CPIO_FUNCINC} "${UN}" Write
+
+Section ${UN}GenerateCPIO
   StrCpy $0 ${ERROR_WRITE_FAULT}
   ${GetOptions} $Arguments "/IN=" $1
   ${GetOptions} $Arguments "/OUT=" $2
@@ -29,9 +45,9 @@ Section GenerateCPIO
   ${IfNot} ${Errors}
     FileOpen $5 "$2" w
     ${IfNot} ${Errors}
-      ${CPIO_Write} $5 $1 $0
+      !insertmacro ${CPIO_PREFIX}Write_Call "${UN}" $5 $1 $0
       ${If} $0 == 0
-        ${CPIO_Write} $5 "" $0
+        !insertmacro ${CPIO_PREFIX}Write_Call "${UN}" $5 "" $0
       ${EndIf}
       FileClose $5
     ${EndIf}
@@ -39,9 +55,14 @@ Section GenerateCPIO
     FileClose $4
   ${EndIf}
 SectionEnd
+!macroend
 
-Function .onInit
-  InitPluginsDir
-  ${GetParameters} $Arguments
-  SetOutPath "$EXEDIR"
-FunctionEnd
+!insertmacro Run ""
+!insertmacro Run ${UNFUNC}
+
+Section "Install"
+  WriteUninstaller "$OUTDIR\uninstall.exe"
+SectionEnd
+
+Section "Uninstall"
+SectionEnd

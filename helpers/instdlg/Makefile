@@ -2,8 +2,9 @@
 
 AS = i686-w64-mingw32-as
 LD = i686-w64-mingw32-ld
-ASFLAGS = -march=i486
-LDFLAGS = --image-base 0x400000 --strip-all --subsystem windows
+IMAGE_BASE = 0x400000
+ASFLAGS = --defsym IMAGE_BASE=$(IMAGE_BASE) -march=i486
+LDFLAGS = --image-base $(IMAGE_BASE) --strip-all --subsystem windows
 
 TARGET = instdlg.exe
 instdlg_OBJS = instdlg.o

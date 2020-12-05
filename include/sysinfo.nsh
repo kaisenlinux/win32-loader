@@ -7,10 +7,6 @@
 
 !include include\stdmacros.nsh
 !include LogicLib.nsh
-!include StrFunc.nsh
-!ifndef StrLoc_INCLUDED
-${StrLoc}
-!endif
 
 !define SYSINFO_FUNCDEF \
   `!insertmacro STDMACROS_FUNCDEF ${SYSINFO_PREFIX}`
@@ -111,7 +107,18 @@ ${SYSINFO_FUNCPROLOG} "${UN}" ComputerName
          ; Indicate error
          StrCpy $2 0
       ${Else}
-         ${StrLoc} $1 $0 "." ">"
+         StrCpy $1 0
+         ${Do}
+           Push $1
+           StrCpy $1 $0 1 $1
+           ${If} $1 == "."
+           ${OrIf} $1 == ""
+             Pop $1
+             ${ExitDo}
+           ${EndIf}
+           Pop $1
+           IntOp $1 $1 + 1
+         ${Loop}
          ${If} $3 = ${SYSINFO_DnsHostname}
            ${If} $1 != ""
              StrCpy $0 $0 $1

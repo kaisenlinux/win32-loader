@@ -5,6 +5,8 @@
 #
 # Usage: run.sh [<helper dir [<Windows architecture> [<test dir>]]]
 
+set -e
+
 SOURCEDIR=$(cd "$(dirname "$0")"; pwd -P)
 TOPDIR=$(cd "${SOURCEDIR}/.."; pwd -P)
 HELPERDIR=${1:-"${TOPDIR}/build"}
@@ -23,7 +25,7 @@ after() {
 }
 
 [ $# -gt 1 ] && shift
-wineSetUp $@
+wine_set_up $@
 err=$?
 case ${err} in
 0)
@@ -39,4 +41,4 @@ case ${err} in
 	echo "Failed to boot wine"
 	;;
 esac
-wineCleanUp
+wine_clean_up

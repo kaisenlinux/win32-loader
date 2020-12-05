@@ -5,6 +5,8 @@
 #
 # Usage: run.sh [<helper dir [<Windows architecture> [<test dir>]]]
 
+set -e
+
 CPIO_NAME="archive.cpio"
 OUTPUT="output.log"
 SCRIPT="cpio_test.nsi"
@@ -13,6 +15,7 @@ TOPDIR=$(cd "${SOURCEDIR}/../.."; pwd -P)
 HELPERDIR=${1:-"${TOPDIR}/build"}
 
 INSTALLER="${SCRIPT%.*}.exe"
+UNINSTALLER="uninstall.exe"
 
 TESTID=
 
@@ -23,7 +26,7 @@ ERROR_INVALID_DATA=13
 . "${SOURCEDIR}/../common/funcs.sh"
 
 before() {
-	makeInstaller "-XOutFile ${PWD}/${INSTALLER}" \
+	make_installer "-XOutFile ${PWD}/${INSTALLER}" \
 		"${SOURCEDIR}/${SCRIPT}"
 }
 
@@ -32,49 +35,67 @@ after() {
 	[ -f "${CPIO_NAME}" ] && rm "${CPIO_NAME}"
 	[ -f "${OUTPUT}" ] && rm "${OUTPUT}"
 	[ -f "${INSTALLER}" ] && rm "${INSTALLER}"
+	[ -f "${UNINSTALLER}" ] && rm "${UNINSTALLER}"
 }
 
-runInstaller() {
-	${WINE} ${INSTALLER} /S "${1}" "/OUT=${CPIO_NAME}" "/RESULT=${OUTPUT}" \
-	&& tail -n 1 ${OUTPUT}
+check_cpio() {
+	result=$1
+	if [ "${result}" = "${ERROR_SUCCESS}" ]; then
+		cpio --extract --to-stdout < "${CPIO_NAME}" | \
+			diff -q "${t}" -
+		if [ $? -ne 0 ]; then
+			result=${ERROR_INVALID_DATA}
+		fi
+	fi
+	result=$(assert_equal "${ERROR_SUCCESS}" "${result}")
+	check_result $? "${result} ($2)"
 }
 
 test_it() {
 	if [ $# -gt 0 ]; then
 		t="${1}"
 		echo "${t}"
-		result=$(runInstaller "/IN=${t}")
-		if [ "${result}" = "${ERROR_SUCCESS}" ]; then
-			cpio --extract --to-stdout < "${CPIO_NAME}" | \
-				diff -q "${t}" -
-			if [ $? -eq 0 ]; then
-				[ -f "${t}" ] && rm "${t}"
-				[ -f "${CPIO_NAME}" ] && rm "${CPIO_NAME}"
-			else
-				result=${ERROR_INVALID_DATA}
-			fi
-		fi
-		result=$(assert_equal "${ERROR_SUCCESS}" "${result}")
-		echo "${result}"
+		run_installer ${INSTALLER} "/IN=${t}" "/OUT=${CPIO_NAME}" \
+			"/RESULT=${OUTPUT}" || exit 1
+		result=$(tail -n 1 ${OUTPUT})
+		check_cpio ${result} "Installer"
+		rm -f ${OUTPUT}
+		run_uninstaller ${UNINSTALLER} "/IN=${t}" "/OUT=${CPIO_NAME}" \
+			"/RESULT=${OUTPUT}" || exit 1
+		result=$(tail -n 1 ${OUTPUT})
+		check_cpio ${result} "Uninstaller"
+		[ -f "${t}" ] && rm "${t}"
+		[ -f "${CPIO_NAME}" ] && rm "${CPIO_NAME}"
+		rm -f ${OUTPUT}
 	fi
 }
 
-test_NonExistentFile() {
-        t="NonExistentFile"
+test_non_existent_file() {
+        t="non_existent_file"
 	echo "${t}"
-	result=$(assert_equal "${ERROR_FILE_NOT_FOUND}" \
-		$(runInstaller "/IN=${t}"))
-	echo "${result}"
+	run_installer ${INSTALLER} "/IN=${t}" "/OUT=${CPIO_NAME}" \
+		"/RESULT=${OUTPUT}" || exit 1
+	result=$(assert_equal $(tail -n 1 ${OUTPUT}) \
+		"${ERROR_FILE_NOT_FOUND}")
+	check_result $? "${result} (Installer)"
+	rm -f ${OUTPUT}
+	run_uninstaller ${UNINSTALLER} "/IN=${t}" "/OUT=${CPIO_NAME}" \
+		"/RESULT=${OUTPUT}" || exit 1
+	result=$(assert_equal $(tail -n 1 ${OUTPUT}) \
+		"${ERROR_FILE_NOT_FOUND}")
+	check_result $? "${result} (Uninstaller)"
+	rm -f ${OUTPUT}
+
 }
 
-test_EmptyFile() {
-        TESTID="EmptyFile"
+test_empty_file() {
+        TESTID="empty_file"
 	touch ${TESTID}
 	test_it "${TESTID}"
 }
 
-test_PreSeedCfg() {
-	TESTID=PreSeedCfg
+test_preseed_cfg() {
+	TESTID=preseed_cfg
 	cat << EOF > ${TESTID}
 d-i debian-installer/locale string en_CA
 d-i netcfg/get_domain string string example.com
@@ -93,14 +114,14 @@ EOF
 }
 
 main() {
-	test_NonExistentFile
-	test_EmptyFile
-	test_PreSeedCfg
+	test_non_existent_file
+	test_empty_file
+	test_preseed_cfg
 }
 
 [ $# -gt 1 ] && shift
-wineSetUp "${@}"
+wine_set_up "${@}"
 before
 main
 after
-wineCleanUp "${@}"
+wine_clean_up "${@}"

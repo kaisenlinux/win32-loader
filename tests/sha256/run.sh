@@ -5,6 +5,8 @@
 #
 # Usage: run.sh [<helper dir [<Windows architecture> [<test dir>]]]
 
+set -e
+
 OUTPUT="output.log"
 SCRIPT="sha256_test.nsi"
 SOURCEDIR=$(cd "$(dirname "$0")"; pwd -P)
@@ -19,7 +21,7 @@ TESTID=
 . "${SOURCEDIR}/../common/funcs.sh"
 
 before() {
-	makeInstaller "-XOutFile ${PWD}/${INSTALLER}" \
+	make_installer "-XOutFile ${PWD}/${INSTALLER}" \
 		$(test "${WINEARCH}" != "win32" && echo "-DNO_SHA256_HELPER") \
 		"-DSHA256_HELPER_DIR=${HELPERDIR}" \
 		"${SOURCEDIR}/${SCRIPT}"
@@ -32,16 +34,8 @@ after() {
 	[ -f "${UNINSTALLER}" ] && rm "${UNINSTALLER}"
 }
 
-runReference() {
+run_reference() {
 	set -- safety $(sha256sum < "${1}") && shift && echo "${1}"
-}
-
-runInstaller() {
-	${WINE} ${INSTALLER} /S "/FILE=${1}" "/RESULT=${OUTPUT}" && tail -n 1 ${OUTPUT}
-}
-
-runUninstaller() {
-	${WINE} ${UNINSTALLER} /S "/?=${PWD}" "/FILE=${1}" "/RESULT=${OUTPUT}" && tail -n 1 ${OUTPUT}
 }
 
 # Convert hexadecimal number into a byte
@@ -95,12 +89,16 @@ EOF
 		# Compute SHA256 digest via Installer and Uninstaller
                 # for the generated test data and compare the result
                 # with the expected one.
-		for runner in Installer Uninstaller; do
-			result=$(assert_equal "${1}" \
-				$(eval run${runner} "${1}"))
-			echo "${result} (${runner})"
-		done
-		rm -f "${1}"
+		run_installer ${INSTALLER} \
+			"/FILE=${1}" "/RESULT=${OUTPUT}" || exit 1
+		result=$(assert_equal "${1}" "$(tail -n 1 ${OUTPUT})")
+		check_result $? "${result} (Installer)"
+		rm -f ${OUTPUT}
+		run_uninstaller ${UNINSTALLER} \
+			"/FILE=${1}" "/RESULT=${OUTPUT}" || exit 1
+		result=$(assert_equal "${1}" "$(tail -n 1 ${OUTPUT})")
+		check_result $? "${result} (Uninstaller)"
+		rm -f ${OUTPUT} "${1}"
 	fi
 }
 
@@ -115,8 +113,8 @@ main() {
 }
 
 [ $# -gt 1 ] && shift
-wineSetUp "${@}"
+wine_set_up "${@}"
 before
 main
 after
-wineCleanUp "${@}"
+wine_clean_up "${@}"

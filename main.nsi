@@ -33,11 +33,12 @@ RequestExecutionLevel admin
 !insertmacro GetRoot
 
 !define CPUID_HELPER_DIR "${BUILD_DIR}/helpers/cpuid"
+!define MINIZ_HELPER_DIR "${BUILD_DIR}/helpers/miniz"
 
 !include include\bootcfg.nsh
 !include include\choice.nsh
-!include include\cpio.nsh
 !include include\cpuid.nsh
+!include include\miniz.nsh
 !include include\security.nsh
 !include include\sysinfo.nsh
 !include include\wmiquery.nsh
@@ -106,8 +107,10 @@ ${Choice_Present}
 ${Choice_OnClick}
 ${Choice_Set}
 ${Choice_Get}
-${CPIO_Write}
 ${CPUID_DataWidth}
+${MINIZ_CPIO_GZ_Close}
+${MINIZ_CPIO_GZ_Open}
+${MINIZ_CPIO_GZ_Write}
 ${SYSINFO_Domain}
 ${SYSINFO_HostName}
 ${SYSINFO_KeyboardLayout}

@@ -3,8 +3,8 @@
 ; CPUID test runner
 ; Run installer with the following arguments
 ;  /RESULT=<result file>
-; and uninstaller
-;  /S _?=<directory containing uninstaller> /RESULT=<result file>
+; and for the uninstaller append the argument below:
+; _?=<directory containing uninstaller>
 
 Unicode True
 Name cpuid
@@ -25,16 +25,15 @@ UninstPage InstFiles
 
 Var Arguments
 
-!macro .onInit UN
-Function ${UN}${__MACRO__}
+!macro Run UN
+!searchreplace INIT_FUNC "${UN}.onInit" ".." "."
+Function ${INIT_FUNC}
   InitPluginsDir
   ${GetParameters} $Arguments
   ClearErrors
   SetOutPath "$EXEDIR"
 FunctionEnd
-!macroend
 
-!macro Run UN
 ${CPUID_FUNCINC} "${UN}" Alloc
 ${CPUID_FUNCINC} "${UN}" Free
 
@@ -72,9 +71,6 @@ Function ${UN}${__MACRO__}
   ${EndIf}
 FunctionEnd
 !macroend
-
-!insertmacro .onInit ""
-!insertmacro .onInit ${UNFUNC}
 
 !insertmacro Run ""
 !insertmacro Run ${UNFUNC}

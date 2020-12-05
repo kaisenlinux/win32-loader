@@ -4,12 +4,11 @@
 
 VPATH ?= .
 MKDIR_P := mkdir -p
-TEMPLATES := templates
+TEMPLATES := $(CURDIR)/templates
 PO := po
 
-# fa: Farsi is disabled because its NSIS translation doesn't convert correctly to its designated codepage (CP1256); see https://bugs.debian.org/939151
-DISABLED_LINGUAS=fa
-LINGUAS= ar be bg bs ca cs da de el en eo es eu fi fr ga gl he hr hu is it ja ko lt nb nl pl pt pt_BR ro ru sk sl sq sr sr@latin sv th tr uk zh_CN zh_TW
+DISABLED_LINGUAS=
+LINGUAS= ar be bg bs ca cs da de el en eo es eu fa fi fr ga gl he hr hu is it ja ko lt nb nl pl pt pt_BR ro ru sk sl sq sr sr@latin sv th tr uk zh_CN zh_TW
 
 all: $(TEMPLATES)/all.nsh $(TEMPLATES)/dialog.nsh $(VPATH)/$(PO)/messages.pot
 

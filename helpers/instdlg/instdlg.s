@@ -6,9 +6,6 @@
    https://sourceware.org/bugzilla/show_bug.cgi?id=17159
  */
 
-/* IMAGE_BASE is required to calculate relative virtual address */
-.set	IMAGE_BASE,		0x400000
-
 .text
 .globl	_WinMainCRTStartup
 _WinMainCRTStartup:

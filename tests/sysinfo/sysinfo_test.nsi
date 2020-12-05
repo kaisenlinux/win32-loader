@@ -5,10 +5,14 @@
 ;  /TEST=<test> /RESULT=<result file>
 ;  <test> can be one of the following:
 ;  Domain HostName KeyboardLayout UserName
+; and for the uninstaller append the argument below:
+; _?=<directory containing uninstaller>
 
 Unicode True
 Name sysinfo
 RequestExecutionLevel user
+
+!define UNFUNC "un."
 
 !include FileFunc.nsh
 
@@ -16,12 +20,9 @@ RequestExecutionLevel user
 !insertmacro GetOptions
 
 !include include\sysinfo.nsh
-${SYSINFO_Domain}
-${SYSINFO_HostName}
-${SYSINFO_KeyboardLayout}
-${SYSINFO_UserName}
 
 Page InstFiles
+UninstPage InstFiles
 
 Var Arguments
 
@@ -46,17 +47,38 @@ Var Arguments
   IntOp ${VALUE} ${VALUE} % 6
 !macroend
 
-!macro INSERT_SECTION FUNCTION
-Section /o ${FUNCTION} Sec${FUNCTION}
+!macro INSERT_SECTION UN FUNCTION
+Section /o ${UN}${FUNCTION} Sec${UN}${FUNCTION}
   Push $0
-  !insertmacro `${SYSINFO_PREFIX}${FUNCTION}_Call` "" $0
+  !insertmacro `${SYSINFO_PREFIX}${FUNCTION}_Call` "${UN}" $0
   Push "$0"
-  Call WriteResult
+  Call ${UN}WriteResult
   Pop $0
 SectionEnd
 !macroend
 
-Function WriteResult
+!macro Run UN
+!searchreplace INIT_FUNC "${UN}.onInit" ".." "."
+Function ${INIT_FUNC}
+  Push $0
+  InitPluginsDir
+  ${GetParameters} $Arguments
+  ClearErrors
+  SetOutPath "$EXEDIR"
+  ${GetOptions} $Arguments "/TEST=" $0
+  ${If} $0 != ""
+    !insertmacro MAP $0
+    SectionSetFlags $0 ${SF_SELECTED}
+  ${EndIf}
+  Pop $0
+FunctionEnd
+
+${SYSINFO_FUNCINC} "${UN}" Domain
+${SYSINFO_FUNCINC} "${UN}" HostName
+${SYSINFO_FUNCINC} "${UN}" KeyboardLayout
+${SYSINFO_FUNCINC} "${UN}" UserName
+
+Function ${UN}WriteResult
   Exch $0
   Push $1
   ${GetOptions} $Arguments "/RESULT=" $1
@@ -76,21 +98,18 @@ FunctionEnd
 ; HostName -> H -> 72 -> 72 % 6 -> 0 -> 1st section
 ; KeyboardLayout -> K -> 75 -> 75 % 6 -> 3 -> 4th section
 ; UserName -> U -> 85 -> 85 % 6 -> 1 -> 2nd section
-!insertmacro INSERT_SECTION HostName
-!insertmacro INSERT_SECTION UserName
-!insertmacro INSERT_SECTION Domain
-!insertmacro INSERT_SECTION KeyboardLayout
+!insertmacro INSERT_SECTION "${UN}" HostName
+!insertmacro INSERT_SECTION "${UN}" UserName
+!insertmacro INSERT_SECTION "${UN}" Domain
+!insertmacro INSERT_SECTION "${UN}" KeyboardLayout
+!macroend
 
-Function .onInit
-  Push $0
-  InitPluginsDir
-  ${GetParameters} $Arguments
-  ClearErrors
-  SetOutPath "$EXEDIR"
-  ${GetOptions} $Arguments "/TEST=" $0
-  ${If} $0 != ""
-    !insertmacro MAP $0
-    SectionSetFlags $0 ${SF_SELECTED}
-  ${EndIf}
-  Pop $0
-FunctionEnd
+!insertmacro Run ""
+!insertmacro Run ${UNFUNC}
+
+Section "Install"
+  WriteUninstaller "$OUTDIR\uninstall.exe"
+SectionEnd
+
+Section "Uninstall"
+SectionEnd

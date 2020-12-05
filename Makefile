@@ -49,7 +49,7 @@ ICONSIZES       := 16,24,32,48,256
 DENSITY         := 170
 
 # Standard makensis call
-MAKENSIS	:= makensis -V3
+MAKENSIS	:= makensis -V3 "-XUnicode True"
 
 # Add to it some version'ing and date
 MAKENSIS	+= -DVERSION=$(VERSION) -D4DIGITS_DATE=$(FOUR_DIGITS_DATE)
@@ -176,10 +176,14 @@ $(OUTFILE_NAME): main.nsi maps.ini \
 	du -h $(OUTFILE_NAME)
 
 test:  $(HELPERS:=_helper)
-	for arch in win32 win64; do \
-		$(CURDIR)/tests/run.sh $(realpath $(BUILD_DIR)) \
-			$${arch} $(realpath $(BUILD_DIR)); \
-	done
+ifneq ($(shell wine --version 2>&1),)
+	$(CURDIR)/tests/run.sh $(realpath $(BUILD_DIR)) win32 \
+		$(realpath $(BUILD_DIR))
+ifeq ($(shell uname -m), x86_64)
+	$(CURDIR)/tests/run.sh $(realpath $(BUILD_DIR)) win64 \
+		$(realpath $(BUILD_DIR))
+endif
+endif
 
 iso: $(BUILD_DIR)/stable.iso $(BUILD_DIR)/daily.iso
 $(BUILD_DIR)/stable.iso: \

@@ -16,7 +16,7 @@ WINEPREFIX=
 #   workdir - optional working directory
 #             If not provided then a new temporary directeroy is
 #             going to be created.
-wineSetUp() {
+wine_set_up() {
 	WINEARCH=${1:-win32}
 	WORKDIR="${2}"
 	err=0
@@ -40,7 +40,7 @@ wineSetUp() {
 			err=95
 		else
 			for sig in ALRM HUP INT QUIT TERM USR1; do
-				trap "wineCleanUp; after; trap - $sig EXIT; exit 1" "$sig"
+				trap "wine_clean_up; after; trap - $sig EXIT; exit 1" "$sig"
 			done
 		fi
 	fi
@@ -50,14 +50,14 @@ wineSetUp() {
 # Clean up wine environment of current working directory in case
 # no working directory parameter was passed on
 # Parameters:
-#   arch - optional architecture to be used with Wine, defaults to win32
-#   workdir - optional working directory to keep
-wineCleanUp() {
+#   arch - optional architecture used by wine, defaults to win32
+#   workdir - optional for retaining working directory
+wine_clean_up() {
 	WORKDIR="${2}"
 	if [ -z "${WORKDIR}" -a -d "${WINEDIR}" ]; then
 		# Wait until the currently running wineserver terminates
 		wineserver --wait
-		rm -r ${WINEDIR}
+		rm -rf ${WINEDIR}
 		TESTDIR=${PWD}
 		if [ "${TESTDIR}" != "${OLDPWD}" ]; then
 			# Switch back to old working directory
@@ -70,17 +70,44 @@ wineCleanUp() {
 	fi
 }
 
+# Convert POSIX to wine path
+# Parameter:
+#   path - POSIX path
+# Returns wine path
+wine_convert_path() {
+	echo "Z:$1" | sed 's&/&\\&g'
+}
+
+# Test that first and second argument are equal
+# Parameters:
+#   first - first parameter
+#   second - second parameter
+# Returns 0 if the parameter values are equal
 assert_equal() {
 	if [ "${1}" != "${2}" ]; then
 		echo "${1} != ${2}"
 		echo "FAIL"
-		exit 1
+		return 1
 	else
 		echo "OK"
 	fi
 }
 
-mapArchitecture() {
+# Check and report result
+# Parameters:
+#   result - return code from check
+#   message - message to display
+# Exits if result code is not zero
+check_result() {
+	echo "$2"
+	if [ $1 -ne 0 ]; then exit 1; fi
+}
+
+# Map wine architecture to the respective NSIS target
+# Parameter:
+#   arch - architecture used by wine
+# Returns makensis compiler option of respective target
+map_architecture() {
 	case ${WINEARCH} in
 		win32)
 			echo "-XTarget x86-unicode"
@@ -94,7 +121,29 @@ mapArchitecture() {
 	esac
 }
 
-makeInstaller() {
-	(cd "${TOPDIR}" && ${MAKENSIS} -NOCD "$(mapArchitecture)" "$@") \
+# Generate NSIS installer
+# Parameters:
+#   additional command line parameters for makensis
+make_installer() {
+	(cd "${TOPDIR}" && ${MAKENSIS} -NOCD "$(map_architecture)" "$@") \
 	|| exit
+}
+
+# Run installer
+# Parameters:
+#   additional command line parameters for installer
+run_installer() {
+	installer="$1"
+	shift
+	${WINE} "${installer}" /S $@
+}
+
+# Run uninstaller
+#   additional command line parameters for uninstaller
+run_uninstaller() {
+	uninstaller="$1"
+	shift
+	${WINE} "${uninstaller}" /S $@ \
+		_?=$(wine_convert_path \
+			$(dirname $(realpath "${uninstaller}")))
 }

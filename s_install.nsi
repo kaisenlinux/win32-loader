@@ -20,6 +20,7 @@
 !define EFI_LOADER "shimx64.efi"
 !define GRUB2_CFG_FILE "grub.cfg"
 !define GRUB2_EFI_FILE "grubx64.efi"
+!define GRUB2_PREFIX_DI "debian-installer\amd64\grub"
 !ifdef NOCD
 !define SHIM_EFI_FILE "bootnetx64.efi"
 !else
@@ -48,20 +49,24 @@ ${STDMACROS_DefIfNotDef} CRYPT_STRING_BASE64 0x00000001
 ;
 ; The default netboot grub efi file (grubnetx64.efi.signed) sets
 ; the prefix to ($root)/grub.
+;
+; Return value:
+;   prefix path used by netboot grub
 Function PatchNetBootGrub
   System::Store 'S'
+  Push "${GRUB2_PREFIX_DI}"
   ; GenPat grubnetx64-installer.efi.signed grubnetx64.efi.signed patch.bin
   ; base64 patch.bin
   StrCpy $1 "\
-VlBBVAEAAIAMAAAAS/ICSiUH3tZ4/D0BHnCoNSlEFDNpksF0kRbus/Z4SP+mAQAAAdgAAAAABQKL\
-WQM2nwEA2gAAAAUBiANraREAEaABAAUJEAAAAC9ncnViAnwGgH0BAAJwEAEQEwAFIEqoEQeenlnS\
-oFdqnJF00Yciq2VWywiMKJi88KYdzojaAqYDkSATAAY5AS07YkBwv1/3u8lIKl+/hFUAWaZBqNeK\
-9LoQ0luh/ZGmMA0GCSqGSIb3DQEBAQUABIIBABPkjTVtAG05pjCwVnrDjPSOnnQ4HW0dqMVMl25W\
-axBKQqUMOzuivs3TCxqZH80zVQ3eOUTqOlaqUbu1wVF4Zn9Jg5fVnciqE9kngPzl6OLJCQkuA9/p\
-v1tgtNwOe4F4GrUz8gxNtox0jhN1mvCLWzvLRjPGh2Di00jOA998QyMWnvR8+Qk3q2M4l3ziDjJL\
-eKzFnRAs6kn8fPBP00K9AOqyHfTvUZHSdrYtPLexe0X0HW8H9FYEqOt8p8DCaVd/Nan1tk6jucVa\
-661yH/MGKBWR7TtD92jF7GMIHZa/6bbxjQppJG+fxjhabRPiakumpOeXzjXCmxoccx4xYEqEBsQA\
-AAAAAAD/ADj77jUr1QE="
+VlBBVAEAAIAMAAAAdqwjC7wFhMEEZG7tSOcQqyB2PkvRGZD/R8sbSL0rFwm0AQAAAdgAAAAABQMk\
+BhQDNZ8BANsAAAAFAXgDW28RABGgAQAFCRAAAAAvZ3J1YgGMAGsBAAJwEAEQEwAFIG0p+KPFdcZ7\
+sDO0jPxShA6Rsaaap4xzvcEzfjz2LuEKApgDkSATAAZHATBaMC8GCSqGSIb3DQEJBDEiBCB71dOE\
+yvapyYM6djOPha7mN4EKkQgwPpIsWcC6JrpOcjANBgkqhkiG9w0BAQEFAASCAQAKitvwdpgDDctz\
+IDR45CxgIFnS+gmTNNLJMZ1oGKZkndax9+NrF5IN0VoqyP5YzI8SsbHfZLwHB/MRzJkDBBzaj5+c\
+KJ8Xgjpu0Cba5BrDT4pGMthYeQbZcVKr3yuu+Rxp74q/PC/8hu8dpjpVRO9pMt9dStYBTtRZw8Kz\
+dGpALtO0C5cIRcYkl2PUIK/PC/wobvAnHuJc7/i013FJIt0epxI3OflzoDjgOYTmLvC+GY35Ybes\
+OjHqZk8GTgIRLXyztlY8s5cvvb4DzX45d6vvd2WQq4p4PgG9tRqs2HTx+yhMpbXNrW7TkFg559Kk\
+9NPYEgJXUuYki2dy2F37KycuAP+AEKfP2mjWAQ=="
   StrLen $2 $1
   ; Length of binary string
   IntOp $3 $2 * 3
@@ -84,6 +89,10 @@ AAAAAAD/ADj77jUr1QE="
           vpatch::vpatchfile $2 $3 $0
           Pop $0
           DetailPrint $0
+	  ${If} $0 == "OK"
+            StrCpy $0 "grub"
+            Exch $0
+          ${EndIf}
         ${EndIf}
       ${EndIf}
     ${EndIf}
@@ -285,12 +294,9 @@ FunctionEnd
 Function PreSeedLinux
   System::Store 'S'
   StrCpy $1 "preseed.cfg"
-  StrCpy $2 "newc_chunk"
-  StrCpy $3 "initrd.gz"
-  StrCpy $4 "gzip.exe"
-  File "/oname=$INSTDIR\$4" /usr/share/win32/gzip.exe
+  StrCpy $2 "initrd.gz"
 
-  StrCpy $0 "$INSTDIR\$3"
+  StrCpy $0 "$INSTDIR\$2"
   DetailPrint "$(appending_preseeding)"
 
   ; IMPORTANT!!  All accessed files must be in the same
@@ -300,31 +306,31 @@ Function PreSeedLinux
 
   StrCpy $0 "$1"
   ClearErrors
-  FileOpen $5 "$1" w
+  FileOpen $3 "$1" w
   ${IfNot} ${Errors}
-    FileWrite $5 "$preseed_cfg$\n"
-    FileClose $5
+    FileWrite $3 "$preseed_cfg$\n"
+    FileClose $3
     ${IfNot} ${Errors}
       StrCpy $0 "$2"
-      FileOpen $5 "$2" w
+      FileOpen $3 "$2" a
       ${IfNot} ${Errors}
-        ${CPIO_Write} $5 "$1" $0
-        ${If} $0 == 0
-          ${CPIO_Write} $5 "" $0
-        ${EndIf}
-        ${If} $0 != 0
-          StrCpy $0 "$2"
-        ${Else}
-          ExpandEnvStrings $0 '"%COMSPEC%" "/C .\$4 -1 <$2 >>$3"'
-          nsExec::Exec '$0'
-          Pop $0
+        FileSeek $3 0 END
+        ${MINIZ_CPIO_GZ_Open} $3 $4
+        ${If} $4 P<> 0
+          ${MINIZ_CPIO_GZ_Write} $4 $1 $0
+	  ${If} $0 == 0
+            ${MINIZ_CPIO_GZ_Write} $4 "" $0
+          ${EndIf}
+          ${MINIZ_CPIO_GZ_Close} $4 $4
           ${If} $0 != 0
-            StrCpy $0 "$INSTDIR\$4"
+          ${OrIf} $4 != 0
+            StrCpy $0 "$2"
           ${Else}
+            ; Indicate success
             StrCpy $0 ""
           ${EndIf}
         ${EndIf}
-        FileClose $5
+        FileClose $3
       ${EndIf}
     ${EndIf}
   ${EndIf}
@@ -753,6 +759,7 @@ Section /o "Firmware Boot Manager" sec_fwbootmgr
                     ; TODO: Remove workaround
                     ; ---
                     Call PatchNetBootGrub
+                    Pop $4
                     ; ---
 !endif
                     CopyFiles /FILESONLY "$INSTDIR\${GRUB2_EFI_FILE}" "$2\${GRUB2_EFI_FILE}"
@@ -763,7 +770,7 @@ Section /o "Firmware Boot Manager" sec_fwbootmgr
                       ; ---
                       Pop $2
                       Push $2
-                      StrCpy $2 "$2grub"
+                      StrCpy $2 "$2$4"
                       CreateDirectory $2
                       ; ---
 !endif

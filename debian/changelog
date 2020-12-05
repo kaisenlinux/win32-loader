@@ -1,3 +1,47 @@
+win32-loader (0.10.2+kaisen1) kaisen-packages; urgency=medium
+
+  * Import new upstream release
+
+ -- Kevin Chevreuil - Kaisen <kaisen@kaisen-linux.org>  Sat, 05 Dec 2020 04:31:03 +0200
+
+win32-loader (0.10.2) unstable; urgency=medium
+
+  [ Didier Raboud ]
+  * Correct typo in 0.10.1 changelog entry
+  * Coerce same-author d/changelog entries
+
+  [ Thomas Gaugler ]
+  * Update patch of signed netboot grub EFI file as required by a newly
+    released and signed netboot grub EFI file addressing the GRUB2
+    "BootHole" vulnerability
+  * Use respective prefix path of netboot grub
+    - The default netboot grub prefix is /debian-installer/amd64/grub
+      but /grub for the patched version.
+  * helpers/instdlg: Consolidate image base definition in one place
+  * tests/sha256: Release crypto context instead of file handle
+  * tests:
+    - Launch shell scripts via -e option to exit in case of failure
+    - Change camelCase functions into lowercase named ones
+    - Map uninstaller init function un..onInit to un.onInit
+    - Move run and check functions of (Un)Installer to common place
+  * tests/cpio: Run tests in uninstaller context as well
+  * SYSINFO_ComputerName replace StrLoc with custom implementation
+  * tests/sysinfo: Run tests in uninstaller context as well
+  * Support output format filters for cpio
+  * miniz compression helper
+  * Provide interface and tests for miniz helper
+  * Use MINIZ_CPIO_GZ_* functions to append preseed.cfg to initrd.gz
+  * Be explicit about path receiving translated installer messages (.nsh)
+  * Run tests based on availability of wine and host architecture
+  * Add cpio required during test phase as dependency
+  * Remove no longer needed gzip-win32 dependency
+  * Increase to debhelper compatibility level 13
+  * Dropping Win ME/98/95 support in favor of Unicode support
+  * Enable Farsi translation
+  * d/copyright: Add license information for helpers and include directories
+
+ -- Didier Raboud <odyx@debian.org>  Sat, 03 Oct 2020 15:38:07 +0200
+
 win32-loader (0.10.1+kaisen1) kaisen-packages; urgency=medium
 
   * Import new upstream release
