@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: win32-loader\n"
 "Report-Msgid-Bugs-To: win32-loader@packages.debian.org\n"
-"POT-Creation-Date: 2019-09-01 11:42+0200\n"
+"POT-Creation-Date: 2021-01-09 10:49+0100\n"
 "PO-Revision-Date: 2011-10-01 00:15+0100\n"
 "Last-Translator: Martin Bagge / brother <brother@bsnet.se>\n"
 "Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
@@ -19,8 +19,7 @@ msgstr ""
 #. This must be a valid string recognised by Nsis.  If your
 #. language is not yet supported by Nsis, please translate the
 #. missing Nsis part first.
-#.
-#: win32-loader.sh:36 win32-loader.c:51
+#: win32-loader.sh:40
 msgid "LANG_ENGLISH"
 msgstr "LANG_SWEDISH"
 
@@ -31,20 +30,30 @@ msgstr "LANG_SWEDISH"
 #.
 #. IMPORTANT: In the rest of this file, only the subset of UTF-8 that can be
 #. converted to this charset should be used.
-#: win32-loader.sh:52
+#: win32-loader.sh:63
 msgid "windows-1252"
 msgstr "windows-1252"
 
 #. translate:
 #. Charset used by NTLDR in your localised version of Windows XP.  If you
 #. don't know, maybe http://en.wikipedia.org/wiki/Code_page helps.
-#: win32-loader.sh:57
+#: win32-loader.sh:68
 msgid "cp437"
 msgstr "cp850"
 
 #. translate:
 #. The name of your language _in English_ (must be restricted to ascii)
-#: win32-loader.sh:67
+#: win32-loader.sh:78
+msgid "English"
+msgstr "Swedish"
+
+#. translate:
+#. The MUI_LANGUAGE macro expects the nlf file without extension for your
+#. language as a parameter. The nlf file should be found in
+#. /usr/share/nsis/Contrib/Language files/
+#: win32-loader.sh:84
+#, sh-format
+msgctxt "NLFID"
 msgid "English"
 msgstr "Swedish"
 
@@ -53,7 +62,7 @@ msgstr "Swedish"
 #. (e.g. cp437) should be used in this string.  If you don't know which charset
 #. applies, limit yourself to ascii. $target_distro; will be "Debian" and $kernel_name;
 #. will be either "GNU/Linux", "GNU/kFreeBSD" or "GNU/Hurd" (in ASCII)
-#: win32-loader.sh:82
+#: win32-loader.sh:96
 #, sh-format
 msgid "$target_distro $kernel_name - Continue with install process"
 msgstr "$target_distro $kernel_name - Fortsätt med installationsprocessen"
@@ -62,38 +71,27 @@ msgstr "$target_distro $kernel_name - Fortsätt med installationsprocessen"
 #. IMPORTANT: only the subset of UTF-8 that can be converted to NTLDR charset
 #. (e.g. cp437) should be used in this string.  If you don't know which charset
 #. applies, limit yourself to ascii.
-#: win32-loader.sh:88
+#: win32-loader.sh:102
 msgid "PXE - Network boot"
 msgstr "PXE - Nätverksbaserad uppstart"
 
 #. translate:
-#. The MUI_LANGUAGE macro expects the nlf file without extension for your
-#. language as a parameter. The nlf file should be found in
-#. /usr/share/nsis/Contrib/Language files/
-#.
-#: win32-loader.c:81
-msgctxt "NLFID"
-msgid "English"
-msgstr "Swedish"
-
-#. translate:
 #. This is the program name, that appears in the installer windows captions and in the Windows Uninstaller dialog.
 #. Ampersands (&) are _forbidden_ in that string.
-#.
-#: win32-loader.c:88
+#: win32-loader.sh:115
 msgid "Debian-Installer loader"
 msgstr "Inläsare för Debian-installerare"
 
-#: win32-loader.c:89
+#: win32-loader.sh:116
 msgid "Cannot find win32-loader.ini."
 msgstr "Kan inte hitta win32-loader.ini."
 
-#: win32-loader.c:90
+#: win32-loader.sh:117
 msgid "win32-loader.ini is incomplete.  Contact the provider of this medium."
 msgstr ""
 "win32-loader.ini är inte fullständig.  Kontakta leverantören av detta media."
 
-#: win32-loader.c:91
+#: win32-loader.sh:118
 msgid ""
 "This program has detected that your keyboard type is \"$0\".  Is this "
 "correct?"
@@ -101,7 +99,7 @@ msgstr ""
 "Det här programmet har identifierat din tangentbordstyp som \"$0\".  Är det "
 "korrekt?"
 
-#: win32-loader.c:92
+#: win32-loader.sh:119
 msgid ""
 "Please send a bug report with the following information:\n"
 "\n"
@@ -121,7 +119,8 @@ msgstr ""
 "\n"
 "Tack."
 
-#: win32-loader.c:93
+#: win32-loader.sh:127
+#, sh-format
 msgid ""
 "There doesn't seem to be enough free disk space in drive $c.  For a complete "
 "desktop install, it is recommended to have at least 3 GB.  If there is "
@@ -133,16 +132,17 @@ msgstr ""
 "separat disk eller partition för att installera Debian på eller om du "
 "planerar att helt ersätta Windows så kan du ignorera den här varningen."
 
-#: win32-loader.c:94
+#: win32-loader.sh:128
 msgid "Error: not enough free disk space.  Aborting install."
 msgstr ""
 "Fel: inte tillräckligt med ledigt diskutrymme.  Avbryter installationen."
 
-#: win32-loader.c:95
+#: win32-loader.sh:129
+#, sh-format
 msgid "This program doesn't support Windows $windows_version yet."
 msgstr "Det här programmet har inte stöd för Windows $windows_version än."
 
-#: win32-loader.c:96
+#: win32-loader.sh:130
 msgid ""
 "The system version you're trying to install is designed to run on modern, 64-"
 "bit computers.  However, your computer is incapable of running 64-bit "
@@ -162,7 +162,7 @@ msgstr ""
 "\n"
 "Installationen kommer att avbrytas nu."
 
-#: win32-loader.c:97
+#: win32-loader.sh:135
 msgid ""
 "Your computer is capable of running modern, 64-bit operating systems.  "
 "However, the system version you're trying to install is designed to run on "
@@ -191,8 +191,8 @@ msgstr ""
 #. normal person would expect they mean, so please keep the quotes, and translate them as literally
 #. as possible.  Also, I suggest you use the same term used in http://support.microsoft.com/kb/314470
 #. if that is available for your language.
-#.
-#: win32-loader.c:105
+#: win32-loader.sh:146
+#, sh-format
 msgid ""
 "Unable to find \"system partition\", assuming it is the same as the \"boot "
 "partition\" ($c)."
@@ -200,15 +200,15 @@ msgstr ""
 "Kunde inte hitta \"systempartition\", antar att det är samma som "
 "\"uppstartspartition\" ($c)."
 
-#: win32-loader.c:106 win32-loader.c:117
+#: win32-loader.sh:147 win32-loader.sh:158
 msgid "Select install mode:"
 msgstr "Välj installationsläge:"
 
-#: win32-loader.c:107
+#: win32-loader.sh:148
 msgid "Normal mode.  Recommended for most users."
 msgstr "Normalläge.  Rekommenderat för de flesta användare."
 
-#: win32-loader.c:108
+#: win32-loader.sh:149
 msgid ""
 "Expert mode.  Recommended for expert users who want full control of the "
 "install process."
@@ -216,48 +216,48 @@ msgstr ""
 "Expertläge.  Rekommenderat för erfarna användare som vill ha full kontroll "
 "över installationsprocessen."
 
-#: win32-loader.c:109
+#: win32-loader.sh:150
 msgid "PXE mode: install a PXE loader to allow remote kernel loading."
 msgstr ""
 "PXE-läge: installera en PXE-laddare för att tillåta fjärrinläsning av kärnan."
 
-#: win32-loader.c:110
+#: win32-loader.sh:151
 msgid "Select action:"
 msgstr "Välj åtgärd:"
 
-#: win32-loader.c:111
+#: win32-loader.sh:152
 msgid "Begin install on this computer."
 msgstr "Starta installationen på den här datorn."
 
-#: win32-loader.c:112
+#: win32-loader.sh:153
 msgid "Repair an installed system (rescue mode)."
 msgstr "Reparera ett installerat system (räddningsläge)."
 
-#: win32-loader.c:113
+#: win32-loader.sh:154
 msgid "Select the kernel:"
 msgstr "Välj kärna:"
 
-#: win32-loader.c:114
+#: win32-loader.sh:155
 msgid "GNU/Linux"
 msgstr "GNU/Linux"
 
-#: win32-loader.c:115
+#: win32-loader.sh:156
 msgid "GNU/kFreeBSD"
 msgstr "GNU/kFreeBSD"
 
-#: win32-loader.c:116
+#: win32-loader.sh:157
 msgid "GNU/Hurd"
 msgstr "GNU/Hurd"
 
-#: win32-loader.c:118
+#: win32-loader.sh:159
 msgid "Graphical install"
 msgstr "Grafisk installerare"
 
-#: win32-loader.c:119
+#: win32-loader.sh:160
 msgid "Text install"
 msgstr "Textbaserad installerare"
 
-#: win32-loader.c:120
+#: win32-loader.sh:161
 msgid "Connecting ..."
 msgstr "Ansluter ..."
 
@@ -271,23 +271,19 @@ msgstr "Ansluter ..."
 #. $2 -> current size of downloaded content
 #. $4 -> total size of file
 #. Example: 3s left - 49.2 of 55.0 MB (2.2 MB/s)
-#.
-#. Former values:
-#. "%d kB (%d%%) av %d kB i %d.%01dkB/s"
-#. " (%d %s%s återstår)"
-#: win32-loader.c:133
+#: win32-loader.sh:173
 msgid "$1 left - $2 of $4$0$(^Byte) ($3$0$(^Byte)/s)"
 msgstr ""
 
-#: win32-loader.c:134
+#: win32-loader.sh:174
 msgid "Select which version of Debian-Installer to use:"
 msgstr "Välj vilken version av Debian-Installer som ska användas:"
 
-#: win32-loader.c:135
+#: win32-loader.sh:175
 msgid "Stable release.  This will install Debian \"stable\"."
 msgstr "Stabil utgåva.  Det här kommer att installera Debian \"stable\"."
 
-#: win32-loader.c:136
+#: win32-loader.sh:176
 msgid ""
 "Daily build.  This is the development version of Debian-Installer.  It will "
 "install Debian \"testing\" by default, and may be capable of installing "
@@ -299,8 +295,7 @@ msgstr ""
 
 #. translate:
 #. You might want to mention that so-called "known issues" page is only available in English.
-#.
-#: win32-loader.c:141
+#: win32-loader.sh:180
 msgid ""
 "It is recommended that you check for known issues before using a daily "
 "build.  Would you like to do that now?"
@@ -308,7 +303,7 @@ msgstr ""
 "Det rekommenderas att du letar upp information om kända problem innan du "
 "använder ett dagligt bygge.  Vill du göra det nu?"
 
-#: win32-loader.c:142
+#: win32-loader.sh:181
 msgid ""
 "The following parameters will be used.  Do NOT change any of these unless "
 "you know what you're doing."
@@ -316,89 +311,85 @@ msgstr ""
 "Följande parametrar kommer att användas.  Ändra INTE någon av dessa såvida "
 "du inte vet vad du gör."
 
-#: win32-loader.c:143
+#: win32-loader.sh:182
 msgid "Proxy settings (host:port):"
 msgstr "Proxyinställningar (värdnamn:port):"
 
-#: win32-loader.c:144
+#: win32-loader.sh:183
 msgid "Location of boot.ini:"
 msgstr "Plats för boot.ini:"
 
-#: win32-loader.c:145
+#: win32-loader.sh:184
 msgid "Base URL for netboot images (linux and initrd.gz):"
 msgstr "Bas-URL för nätuppstartsavbilder (linux och initrd.gz):"
 
-#: win32-loader.c:146
+#: win32-loader.sh:185
 msgid "Error"
 msgstr "Fel"
 
-#: win32-loader.c:147
+#: win32-loader.sh:186
 msgid "Error: failed to copy $0 to $1."
 msgstr "Fel: misslyckades med att kopiera $0 till $1."
 
 #. translate:
 #. $0 will be "Release" (it is a filename).
-#.
-#: win32-loader.c:152
+#: win32-loader.sh:190
 msgid "Checking GPG signature on $0."
 msgstr "Kontrollerar GPG-signatur på $0."
 
 #. translate:
 #. $0 will be "Release" (it is a filename).
-#.
-#: win32-loader.c:157
+#: win32-loader.sh:194
 msgid "The downloaded $0 file cannot be trusted! Aborting."
 msgstr "Den nedladdade filen $0 har ett tillitsproblem! Avbryter."
 
 #. translate:
 #. This appears in a MessageBox when the md5 checksum verification failed. $0 is a url; $2 is the filename $1 is the
 #. computed checksum and $4 is the expected one.
-#.
-#: win32-loader.c:163
+#: win32-loader.sh:199
 msgid "Checksum mismatch for $0/$2. Got $1 when expecting $4. Aborting."
 msgstr ""
 "Kontrollsummorna stämmer inte för $0/$2. Fick $1 men förväntade $4. Avbryter."
 
 #. translate:
 #. $2 is a filename
-#.
-#: win32-loader.c:168
+#: win32-loader.sh:203
 msgid "Computing checksum for $2"
 msgstr "Beräknar kontrollsumma för $2"
 
-#: win32-loader.c:169
+#: win32-loader.sh:205
 msgid "Generating $0"
 msgstr "Skapar $0"
 
-#: win32-loader.c:170
+#: win32-loader.sh:206
 msgid "Appending preseeding information to $0"
 msgstr "Applicerar information från förinställningar för $0"
 
-#: win32-loader.c:171
+#: win32-loader.sh:207
 msgid "Error: unable to run $0."
 msgstr "Fel: kunde inte köra $0."
 
-#: win32-loader.c:172
+#: win32-loader.sh:208
 msgid "Disabling NTFS compression in bootstrap files"
 msgstr "Stänger av NTFS-komprimering i bootstrap-filer."
 
-#: win32-loader.c:173
+#: win32-loader.sh:209
 msgid "Registering in NTLDR"
 msgstr "Registrerar i NTLDR"
 
-#: win32-loader.c:174
+#: win32-loader.sh:210
 msgid "Registering in BootMgr"
 msgstr "Registrerar i BootMgr."
 
-#: win32-loader.c:175
+#: win32-loader.sh:211
 msgid "Error: failed to parse bcdedit.exe output."
 msgstr "Fel: misslyckades med att tolka utdata från bcdedit.exe."
 
-#: win32-loader.c:176
+#: win32-loader.sh:212
 msgid "Error: $0 not found.  Is this really Windows $windows_version?"
 msgstr "Fel: $0 hittades inte.  Är det här verkligen Windows $windows_version?"
 
-#: win32-loader.c:177
+#: win32-loader.sh:213
 msgid "VERY IMPORTANT NOTICE:\\n\\n"
 msgstr "MYCKET VIKTIG NOTERING:\\n\\n"
 
@@ -407,8 +398,7 @@ msgstr "MYCKET VIKTIG NOTERING:\\n\\n"
 #. will display one or the other depending on version of Windows.
 #. Take into account that either option has to make sense in our
 #. current context (i.e. be careful when using pronouns, etc).
-#.
-#: win32-loader.c:185
+#: win32-loader.sh:220
 msgid ""
 "The second stage of this install process will now be started.  After your "
 "confirmation, this program will restart Windows in DOS mode, and "
@@ -418,7 +408,7 @@ msgstr ""
 "Efter att du har bekräftat kommer programmet att starta om Windows i DOS-"
 "läget och automatiskt läsa in nästa del av installationsprocessen.\\n\\n"
 
-#: win32-loader.c:186
+#: win32-loader.sh:221
 msgid ""
 "You need to reboot in order to proceed with the install process.  During "
 "your next boot, you will be asked whether you want to start Windows or "
@@ -429,7 +419,7 @@ msgstr ""
 "starta Windows eller Debian Installer.  Välj Debian Installer för att "
 "fortsätta med installationsprocessen.\\n\\n"
 
-#: win32-loader.c:187
+#: win32-loader.sh:222
 msgid ""
 "During the install process, you will be offered the possibility of either "
 "reducing your Windows partition or completely replacing it.  In both cases, "
@@ -448,6 +438,6 @@ msgstr ""
 "disk) kan du avinstallera denna inläsare genom Windows Lägg till/Ta bort "
 "program i Kontrollpanelen."
 
-#: win32-loader.c:188
+#: win32-loader.sh:223
 msgid "Do you want to reboot now?"
 msgstr "Vill du starta om nu?"

@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 include /usr/share/dpkg/pkg-info.mk
 
+export DEB_BUILD_OPTIONS=nocheck
+
 BUILD_DIR := build
 
 # Install the win32-loader-standalone.exe as debian/tools/win32-loader/$(SUITE)/win32-loader.exe on the mirrors
@@ -8,12 +10,12 @@ BYHAND ?= yes
 
 W32_BYHAND_NAME := win32-loader_$(DEB_VERSION)_all
 
-B_D_PACKAGES := grub-pc-bin gzip-win32 gpgv-win32 debian-archive-keyring loadlin ipxe nsis
+B_D_PACKAGES := grub-pc-bin gzip-win32 gpgv-win32 kaisen-archive-keyring loadlin ipxe nsis
 
 PACKAGES_LIST := $(shell set -e; \
 	for p in ${B_D_PACKAGES}; \
 	do \
-		dpkg-query --showformat='$${source:Package;-25} $${source:Version;-25} http://deb.debian.org/debian/pool/main/$${source:Package;1}/$${source:Package}\\n' --show $$p; \
+		dpkg-query --showformat='$${source:Package;-25} $${source:Version;-25} https://deb.kaisenlinux.org/pool/main/$${source:Package;1}/$${source:Package}\\n' --show $$p; \
 	done)
 
 BUILT_USING_LIST := $(shell set -e; \

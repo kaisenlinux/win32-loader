@@ -1,5 +1,5 @@
 ; Debian-Installer Loader - Final customisation
-; 
+;
 ; Copyright (C) 2007,2008,2009  Robert Millan <rmh@aybabtu.com>
 ; Copyright (C) 2010,2011       Didier Raboud <odyx@debian.org>
 ;
@@ -18,6 +18,92 @@
 
 ${STDMACROS_DefIfNotDef} GW_HWNDNEXT 2
 ${STDMACROS_DefIfNotDef} GW_CHILD 5
+
+Function WritePreSeedCfg
+  System::Store 'S'
+
+  ClearErrors
+  FileOpen $3 ${PRESEED_CFG} w
+  ${IfNot} ${Errors}
+    ; ********************************************** preseed rescue
+    ${If} $rescue == true
+      FileWrite $3 "d-i rescue/enable boolean true$\n"
+    ${EndIf}
+
+    ; ********************************************** preseed locale
+    ${If} $unsupported_language == false
+      ReadINIStr $0 $PLUGINSDIR\maps.ini "languages" "$LANGUAGE"
+      ReadRegStr $1 HKCU "Control Panel\International" iCountry
+      ReadINIStr $1 $PLUGINSDIR\maps.ini "countries" "$1"
+      ${If} $0 != ""
+        ${If} $1 != ""
+          StrCpy $0 "$0_$1"
+        ${Endif}
+        FileWrite $3 "d-i debian-installer/locale string $0$\n"
+      ${Endif}
+    ${Endif}
+
+    ; ********************************************** preseed timezone
+    ReadRegStr $0 HKLM SYSTEM\CurrentControlSet\Control\TimeZoneInformation TimeZoneKeyName
+    ${If} $0 == ""
+      ReadRegStr $0 HKLM SYSTEM\CurrentControlSet\Control\TimeZoneInformation StandardName
+    ${Endif}
+    ReadINIStr $0 $PLUGINSDIR\maps.ini "timezones" "$0"
+    ${If} $0 != ""
+      FileWrite $3 "d-i time/zone string $0$\nd-i time/zone seen false$\n"
+    ${Endif}
+
+    ; ********************************************** preseed keymap
+    ${SYSINFO_KeyboardLayout} $0
+    ReadINIStr $0 $PLUGINSDIR\maps.ini "keymaps" "$0"
+    ; FIXME: do we need to support non-AT keyboards here?
+    ${If} $0 != ""
+      ${If} $expert == true
+        MessageBox MB_YESNO|MB_ICONQUESTION $(detected_keyboard_is) IDNO keyboard_bad_guess
+        FileWrite $3 "d-i console-keymaps-at/keymap select $0$\n\
+d-i console-keymaps-at/keymap seen true$\n"
+        Goto keyboard_end
+keyboard_bad_guess:
+        MessageBox MB_OK $(keyboard_bug_report)
+keyboard_end:
+      ${Else}
+        FileWrite $3 "d-i console-keymaps-at/keymap select $0$\n\
+d-i console-keymaps-at/keymap seen false$\n"
+      ${Endif}
+    ${Endif}
+
+    ; ********************************************** preseed hostname
+    ${SYSINFO_HostName} $0
+    ${If} $0 != ""
+      FileWrite $3 "d-i netcfg/get_hostname string $0$\n\
+d-i netcfg/get_hostname seen false$\n"
+    ${EndIf}
+
+    ; ********************************************** preseed domain
+    ${SYSINFO_Domain} $0
+    ${If} $0 != ""
+      FileWrite $3 "d-i netcfg/get_domain string $0$\n\
+d-i netcfg/get_domain seen false$\n"
+    ${EndIf}
+
+    ; ********************************************** preseed user-fullname
+    ${SYSINFO_UserName} $0
+    ${If} $0 != ""
+      FileWrite $3 "d-i passwd/user-fullname string $0$\n\
+d-i passwd/user-fullname seen false$\n"
+    ${Endif}
+
+    ; ********************************************** preseed proxy
+    ${If} $proxy == ""
+      FileWrite $3 "d-i mirror/http/proxy seen true$\n"
+    ${Else}
+      FileWrite $3 "d-i mirror/http/proxy string http://$proxy/$\n"
+    ${Endif}
+    FileClose $3
+  ${EndIf}
+
+  System::Store 'L'
+FunctionEnd
 
 Function ShowCustom
 ; Gather all the missing information before ShowCustom is displayed
@@ -76,87 +162,9 @@ ini_is_ok:
   StrCpy $proxy "$0"
 proxyless:
 
-; ********************************************** preseed locale
-  ${If} $unsupported_language == false
-    ReadINIStr $0 $PLUGINSDIR\maps.ini "languages" "$LANGUAGE"
-    ReadRegStr $1 HKCU "Control Panel\International" iCountry
-    ReadINIStr $1 $PLUGINSDIR\maps.ini "countries" "$1"
-    ${If} $0 != ""
-      ${If} $1 != ""
-        StrCpy $0 "$0_$1"
-      ${Endif}
-      StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i debian-installer/locale string $0"
-    ${Endif}
-  ${Endif}
-
-; ********************************************** preseed domain
-  ${SYSINFO_Domain} $0
-  ${If} $0 != ""
-    StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i netcfg/get_domain string $0$\n\
-d-i netcfg/get_domain seen false"
-  ${EndIf}
-
-; ********************************************** preseed timezone
-  ReadRegStr $0 HKLM SYSTEM\CurrentControlSet\Control\TimeZoneInformation TimeZoneKeyName
-  ${If} $0 == ""
-    ReadRegStr $0 HKLM SYSTEM\CurrentControlSet\Control\TimeZoneInformation StandardName
-  ${Endif}
-  ReadINIStr $0 $PLUGINSDIR\maps.ini "timezones" "$0"
-  ${If} $0 != ""
-    StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i time/zone string $0$\n\
-d-i time/zone seen false"
-  ${Endif}
-
-; ********************************************** preseed keymap
-  ${SYSINFO_KeyboardLayout} $0
-  ReadINIStr $0 $PLUGINSDIR\maps.ini "keymaps" "$0"
-  ; FIXME: do we need to support non-AT keyboards here?
-  ${If} $0 != ""
-    ${If} $expert == true
-      MessageBox MB_YESNO|MB_ICONQUESTION $(detected_keyboard_is) IDNO keyboard_bad_guess
-      StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i console-keymaps-at/keymap select $0$\n\
-d-i console-keymaps-at/keymap seen true"
-      Goto keyboard_end
-keyboard_bad_guess:
-      MessageBox MB_OK $(keyboard_bug_report)
-keyboard_end:
-    ${Else}
-      StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i console-keymaps-at/keymap select $0$\n\
-d-i console-keymaps-at/keymap seen false"
-    ${Endif}
-  ${Endif}
-
-; ********************************************** preseed hostname
-  ${SYSINFO_HostName} $0
-  ${If} $0 != ""
-    StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i netcfg/get_hostname string $0$\n\
-d-i netcfg/get_hostname seen false"
-  ${EndIf}
-
 ; ********************************************** preseed priority
   ${If} $expert == true
     StrCpy $preseed_cmdline "$preseed_cmdline priority=low"
-  ${Endif}
-
-; ********************************************** preseed user-fullname
-  ${SYSINFO_UserName} $0
-  ${If} $0 != ""
-    StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i passwd/user-fullname string $0$\n\
-d-i passwd/user-fullname seen false"
   ${Endif}
 
 ; ********************************************** Display customisation dialog now
@@ -184,6 +192,8 @@ d-i passwd/user-fullname seen false"
       Pop $1
       nsDialogs::show
     ${EndIf}
+  ${Else}
+    Call WritePreSeedCfg
   ${Endif}
 
   System::Store 'L'
@@ -235,18 +245,7 @@ _${__FUNCTION__}_LastVar:
   ${EndIf}
 !endif
 
-; do this inmediately after custom.ini, because proxy settings can be
-; overriden there
-; ********************************************** preseed proxy
-  ${If} $proxy == ""
-    StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i mirror/http/proxy seen true$\n"
-  ${Else}
-    StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i mirror/http/proxy string http://$proxy/$\n"
-  ${Endif}
+  Call WritePreSeedCfg
 
   System::Store 'L'
 FunctionEnd

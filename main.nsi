@@ -22,6 +22,8 @@ SetCompressor /SOLID lzma
 !define BUILD_DIR "."
 !endif
 
+!define PRESEED_CFG "preseed.cfg"
+
 ; Needed to disable idiotic compatibility mode where Vista identifies itself
 ; as XP.  Otherwise useless (admin privilege is the default for installers).
 RequestExecutionLevel admin
@@ -72,9 +74,9 @@ Var /GLOBAL c
 Var /GLOBAL d
 !endif
 Var /GLOBAL preseed_cmdline
-Var /GLOBAL preseed_cfg
 Var /GLOBAL proxy
 Var /GLOBAL arch
+Var /GLOBAL rescue
 Var /GLOBAL target_distro
 
 ;--------------------------------

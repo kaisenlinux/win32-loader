@@ -24,10 +24,7 @@ $(TEMPLATES)/dialog.nsh: win32-loader.sh $(TEMPLATES)/all.nsh | $(TEMPLATES)
 $(TEMPLATES)/all.nsh: $(foreach lang, $(LINGUAS), $(TEMPLATES)/$(lang).nsh) | $(TEMPLATES)
 	for i in $^ ; do echo "; BEGIN $$i" ; cat $$i ; echo "; END $$i" ; done > $@
 
-win32-loader: win32-loader.c
-	gcc -DTEXTDOMAINDIR=\"$(CURDIR)/locale\" $^ -o $@
-
-$(TEMPLATES)/en.nsh: win32-loader.sh win32-loader | $(TEMPLATES)
+$(TEMPLATES)/en.nsh: win32-loader.sh | $(TEMPLATES)
 	LANGUAGE=C $(realpath $<) > $@
 
 locale/%/LC_MESSAGES/win32-loader.mo: $(PO)/%.po $(VPATH)/$(PO)/messages.pot | $(TEMPLATES)
@@ -35,12 +32,12 @@ locale/%/LC_MESSAGES/win32-loader.mo: $(PO)/%.po $(VPATH)/$(PO)/messages.pot | $
 	msgmerge -U $< $(dir $<)messages.pot
 	msgfmt -c --statistics -o $@ $<
 
-$(TEMPLATES)/%.nsh: win32-loader.sh win32-loader locale/%/LC_MESSAGES/win32-loader.mo | $(TEMPLATES)
+$(TEMPLATES)/%.nsh: win32-loader.sh locale/%/LC_MESSAGES/win32-loader.mo | $(TEMPLATES)
 	LANGUAGE=$* $(realpath $<) > $@
 
-$(PO)/messages.pot: win32-loader.sh win32-loader.c
-	xgettext --msgid-bugs-address=win32-loader@packages.debian.org --from-code=utf-8 -ctranslate --keyword=_ $^ -o $@
+$(PO)/messages.pot: win32-loader.sh
+	xgettext --add-comments=translate --from-code=utf-8 --language=Shell --msgid-bugs-address=win32-loader@packages.debian.org --output=$@ $^
 
 clean:
-	rm -rf $(TEMPLATES) locale win32-loader
+	rm -rf $(TEMPLATES) locale
 	rm -f $(foreach lang, $(LINGUAS), $(PO)/$(lang).po~)

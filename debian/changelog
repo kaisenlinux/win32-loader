@@ -1,3 +1,36 @@
+win32-loader (0.10.4+kaisen1) kaisen-packages; urgency=medium
+
+  * Import new upstream release
+
+ -- Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>  Wed, 03 Mar 2021 03:15:29 +0200
+
+win32-loader (0.10.4) unstable; urgency=medium
+
+  [ Thomas Gaugler ]
+  * Run win64 tests only on 64-bit wine
+  * Makefile: Add build directory as prerequisite for icon generation
+  * s_install.nsi: Fix indentation
+  * Use signed grub efi file of testing instead of buster
+    The signed grub efi file of buster lacks the leading / in the prefix.
+  * l10n: Generate translations only via shell script,
+    update po and pot files
+  * Write entries to preseed.cfg one by one
+    By default NSIS limits strings to 1024 characters. Writing each entry
+    destined for preseed.cfg on its own prevents a possible data loss.
+  * Use "create error" message in case adding preseed.cfg to
+    installer's initrd.gz fails
+  * Restore variables before returning from Get_SHA256_ref
+  * Download signed grub efi file of testing (bullseye) if the one
+    of stable (buster) is faulty determined by its sha256 fingerprint
+
+  [ Updated translations ]
+  * Russian (ru.po) by Yuri Kozlov. Closes: #974891
+
+  [ Didier Raboud ]
+  * Bump S-V to 4.5.1 without changes needed
+
+ -- Thomas Gaugler <thomas@dadie.net>  Mon, 11 Jan 2021 08:24:07 +0100
+
 win32-loader (0.10.2+kaisen1) kaisen-packages; urgency=medium
 
   * Import new upstream release

@@ -1,13 +1,13 @@
 Source: win32-loader
 XSBC-Original-Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
-Maintainer: Kevin Chevreuil - Kaisen <kaisen@kaisen-linux.org>
+Maintainer: Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>
 Section: utils
 Priority: optional
 Build-Depends: nsis (>= 3),
                mingw-w64,
                librsvg2-bin,
                gawk,
-               gettext,
+               gettext (>= 0.20),
                grub-pc-bin,
                imagemagick,
                ipxe,
@@ -15,10 +15,11 @@ Build-Depends: nsis (>= 3),
                locales-all,
                gpgv-win32,
                debian-archive-keyring,
-               gzip-win32,
+	       kaisen-archive-keyring,
+               cpio,
                wine [i386],
-               debhelper-compat (= 12)
-Standards-Version: 4.5.0
+               debhelper-compat (= 13)
+Standards-Version: 4.5.1
 Rules-Requires-Root: no
 Vcs-Browser: https://gitlab.com/kaisenlinux/packages/win32-loader
 Vcs-Git: https://gitlab.com/kaisenlinux/packages/win32-loader.git

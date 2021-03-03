@@ -1,5 +1,5 @@
 ; Debian-Installer Loader - Rescue mode selection
-; 
+;
 ; Copyright (C) 2007,2008,2009  Robert Millan <rmh@aybabtu.com>
 ; Copyright (C) 2010,2011       Didier Raboud <odyx@debian.org>
 ;
@@ -18,18 +18,17 @@
 
 
 Function ShowRescue
+  StrCpy $rescue false
 !ifdef PXE
- ${If} $pxe_mode == "false"
+  ${If} $pxe_mode == "false"
 !endif ;PXE
-  ${Choice_Present} rescue 3
-  ${Choice_Get} $0
+    ${Choice_Present} rescue 3
+    ${Choice_Get} $0
 
-  ${If} $0 == "2"
-    StrCpy $preseed_cfg "\
-$preseed_cfg$\n\
-d-i rescue/enable boolean true"
-  ${Endif}
+    ${If} $0 == "2"
+      StrCpy $rescue true
+    ${Endif}
 !ifdef PXE
- ${Endif} ; $pxe_mode == "false"
+  ${Endif} ; $pxe_mode == "false"
 !endif ;PXE
 FunctionEnd

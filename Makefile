@@ -160,7 +160,7 @@ templates/gtk.bmp: templates/gtk_orig.png
 	convert $^ -resize 107x80 BMP3:$@
 
 # Build the icon out of the SVG source
-$(BUILD_DIR)/win32-loader.ico: icon/swirl.svg
+$(BUILD_DIR)/win32-loader.ico: icon/swirl.svg | $(BUILD_DIR)
 	convert -background none -density $(DENSITY) $^ -depth 8 -colors 256 -dither FloydSteinberg -define png:compression-filter=1 -define png:compression-level=9 -define png:compression-strategy=1 -define icon:auto-resize=$(ICONSIZES) $@
 
 $(OUTFILE_NAME): main.nsi maps.ini \
@@ -179,7 +179,7 @@ test:  $(HELPERS:=_helper)
 ifneq ($(shell wine --version 2>&1),)
 	$(CURDIR)/tests/run.sh $(realpath $(BUILD_DIR)) win32 \
 		$(realpath $(BUILD_DIR))
-ifeq ($(shell uname -m), x86_64)
+ifeq ($(notdir $(shell winepath -u c:/windows/system32 2>/dev/null)),syswow64)
 	$(CURDIR)/tests/run.sh $(realpath $(BUILD_DIR)) win64 \
 		$(realpath $(BUILD_DIR))
 endif

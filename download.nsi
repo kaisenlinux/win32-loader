@@ -122,6 +122,7 @@ Function Get_SHA256_ref
 ; d62f7850ef1a0a381c1e856936761ddd678e16dfdab90685de2deaf248f8d655      108 contrib/debian-installer/binary-amd64/Release
 ;or like;
 ;8716fec256b2df0b3e7c2f45a90813285b28fe7a72e4925c14d456d40af4caa1  ./netboot/debian-installer/amd64/linux
+    System::Store 'S'
     ; Url we are looking for
     Pop $0
     ; Release file
@@ -149,4 +150,5 @@ Function Get_SHA256_ref
     Push "false-sha256"
   sha256_done:
     FileClose $3
+    System::Store 'L'
 FunctionEnd
